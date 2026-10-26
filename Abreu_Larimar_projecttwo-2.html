@@ -1,0 +1,1167 @@
+﻿<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd"><html><head></head><body>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<main>
+<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell">
+<div class="jp-Cell-inputWrapper">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
+</div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput">
+<h1>Treasure Hunt Game Notebook<a rel="noopener" class="anchor-link" href="#Treasure-Hunt-Game-Notebook">&#182;</a></h1><h2>Read and Review Your Starter Code<a rel="noopener" class="anchor-link" href="#Read-and-Review-Your-Starter-Code">&#182;</a></h2><p>The theme of this project is a popular treasure hunt game in which the player needs to find the treasure before the pirate does. While you will not be developing the entire game, you will write the part of the game that represents the intelligent agent, which is a pirate in this case. The pirate will try to find the optimal path to the treasure using deep Q-learning.</p>
+</div>
+</div>
+</div>
+</div>
+<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell">
+<div class="jp-Cell-inputWrapper">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
+</div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput">
+<div class="alert alert-block alert-success" style="color:black;">
+<b>To Begin:</b> Use this <b>TreasureHuntGame_starterCode.ipynb</b> file to complete your assignment. 
+<br/><br/>
+You have been provided with two Python classes and this notebook to help you with this assignment. The first class, <b>TreasureMaze.py</b>, represents the environment, which includes a maze object defined as a matrix. The second class, <b>GameExperience.py</b>, stores the episodes – that is, all the states that come in between the initial state and the terminal state. This is later used by the agent for learning by experience, called &quot;exploration&quot;. This notebook shows how to play a game. Your task is to complete the deep Q-learning implementation in the qtrain() function for which a skeleton implementation has been provided. 
+</div>
+<br/>
+<div class="alert alert-block alert-info" style="color:black;">
+<b>NOTE: </b>The code block you will need to complete will have <b>#TODO</b> as a header.
+<br/> First, read and review the next few code and instruction blocks to understand the code that you have been given.</div>
+</div>
+</div>
+</div>
+</div>
+<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell">
+<div class="jp-Cell-inputWrapper">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
+</div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput">
+<div class="alert alert-block alert-warning" style="color: #333333;">
+<b>Installations</b> The following command will install the necessary Python libraries to necessary to run this application. If you see a &quot;[notice] A new release of pip is available: 23.1.2 -&gt; 25.2&quot; at the end of the installation, you may disregard that statement. 
+</div>
+</div>
+</div>
+</div>
+</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell">
+<div class="jp-Cell-inputWrapper">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea">
+<div class="jp-InputPrompt jp-InputArea-prompt">In&#160;[1]:</div>
+<div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor">
+<div class="cm-editor cm-s-jupyter">
+<div class="highlight hl-ipython3"><pre><span></span><span class="o">!</span>pip<span class="w"> </span>install<span class="w"> </span>-r<span class="w"> </span>requirements.txt
+</pre></div>
+</div>
+</div>
+</div>
+</div>
+<div class="jp-Cell-outputWrapper">
+<div class="jp-Collapser jp-OutputCollapser jp-Cell-outputCollapser">
+</div>
+<div class="jp-OutputArea jp-Cell-outputArea">
+<div class="jp-OutputArea-child">
+<div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
+<div class="jp-RenderedText jp-OutputArea-output">
+<pre>Requirement already satisfied: numpy==1.26.4 in /home/codio/.pyenv/versions/3.11.9/lib/python3.11/site-packages (from -r requirements.txt (line 1)) (1.26.4)
+Requirement already satisfied: keras in /home/codio/.pyenv/versions/3.11.9/lib/python3.11/site-packages (from -r requirements.txt (line 2)) (3.4.1)
+Requirement already satisfied: absl-py in /home/codio/.pyenv/versions/3.11.9/lib/python3.11/site-packages (from keras-&gt;-r requirements.txt (line 2)) (2.1.0)
+Requirement already satisfied: rich in /home/codio/.pyenv/versions/3.11.9/lib/python3.11/site-packages (from keras-&gt;-r requirements.txt (line 2)) (13.7.1)
+Requirement already satisfied: namex in /home/codio/.pyenv/versions/3.11.9/lib/python3.11/site-packages (from keras-&gt;-r requirements.txt (line 2)) (0.0.8)
+Requirement already satisfied: h5py in /home/codio/.pyenv/versions/3.11.9/lib/python3.11/site-packages (from keras-&gt;-r requirements.txt (line 2)) (3.11.0)
+Requirement already satisfied: optree in /home/codio/.pyenv/versions/3.11.9/lib/python3.11/site-packages (from keras-&gt;-r requirements.txt (line 2)) (0.12.1)
+Requirement already satisfied: ml-dtypes in /home/codio/.pyenv/versions/3.11.9/lib/python3.11/site-packages (from keras-&gt;-r requirements.txt (line 2)) (0.4.0)
+Requirement already satisfied: packaging in /home/codio/.pyenv/versions/3.11.9/lib/python3.11/site-packages (from keras-&gt;-r requirements.txt (line 2)) (24.1)
+Requirement already satisfied: typing-extensions&gt;=4.5.0 in /home/codio/.pyenv/versions/3.11.9/lib/python3.11/site-packages (from optree-&gt;keras-&gt;-r requirements.txt (line 2)) (4.12.2)
+Requirement already satisfied: markdown-it-py&gt;=2.2.0 in /home/codio/.pyenv/versions/3.11.9/lib/python3.11/site-packages (from rich-&gt;keras-&gt;-r requirements.txt (line 2)) (3.0.0)
+Requirement already satisfied: pygments&lt;3.0.0,&gt;=2.13.0 in /home/codio/.pyenv/versions/3.11.9/lib/python3.11/site-packages (from rich-&gt;keras-&gt;-r requirements.txt (line 2)) (2.18.0)
+Requirement already satisfied: mdurl~=0.1 in /home/codio/.pyenv/versions/3.11.9/lib/python3.11/site-packages (from markdown-it-py&gt;=2.2.0-&gt;rich-&gt;keras-&gt;-r requirements.txt (line 2)) (0.1.2)
+
+<span class="ansi-bold">[</span><span class="ansi-blue-fg">notice</span><span class="ansi-bold">]</span> A new release of pip is available: <span class="ansi-red-fg">24.1.2</span> -&gt; <span class="ansi-green-fg">26.2.1</span>
+<span class="ansi-bold">[</span><span class="ansi-blue-fg">notice</span><span class="ansi-bold">]</span> To update, run: <span class="ansi-green-fg">pip install --upgrade pip</span>
+</pre>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell">
+<div class="jp-Cell-inputWrapper">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
+</div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput">
+<h2>Tensorflow CPU Acceleration Warning</h2>
+<div class="alert alert-block alert-danger" style="color: #333333;">
+<b>GPU/CUDA/Memory Warnings/Errors:</b> You may receive some errors referencing that GPUs will not be used, CUDA could not be found, or free system memory allocation errors. These and a few others, are standard errors that can be ignored here as they are environment based.<br/><br/>
+<b>Example messages:</b>
+<ul>
+<li>oneDNN custom operations are on. You may see slightly different numerical results due to floating-point round-off errors from different computation orders</li>
+<li>WARNING: All log messages before absl::InitializeLog() is called are written to STDERR</li>
+</ul></div>
+</div>
+</div>
+</div>
+</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs">
+<div class="jp-Cell-inputWrapper">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea">
+<div class="jp-InputPrompt jp-InputArea-prompt">In&#160;[2]:</div>
+<div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor">
+<div class="cm-editor cm-s-jupyter">
+<div class="highlight hl-ipython3"><pre><span></span><span class="kn">from</span> <span class="nn">__future__</span> <span class="kn">import</span> <span class="n">print_function</span>
+<span class="kn">import</span> <span class="nn">os</span><span class="o">,</span> <span class="nn">sys</span><span class="o">,</span> <span class="nn">time</span><span class="o">,</span> <span class="nn">datetime</span><span class="o">,</span> <span class="nn">json</span><span class="o">,</span> <span class="nn">random</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">import</span> <span class="nn">tensorflow</span> <span class="k">as</span> <span class="nn">tf</span>
+<span class="kn">from</span> <span class="nn">tensorflow.keras.models</span> <span class="kn">import</span> <span class="n">clone_model</span>
+<span class="kn">from</span> <span class="nn">keras.models</span> <span class="kn">import</span> <span class="n">Sequential</span>
+<span class="kn">from</span> <span class="nn">keras.layers</span> <span class="kn">import</span> <span class="n">Dense</span><span class="p">,</span> <span class="n">Activation</span><span class="p">,</span> <span class="n">PReLU</span>
+<span class="kn">from</span> <span class="nn">keras.optimizers</span> <span class="kn">import</span> <span class="n">SGD</span> <span class="p">,</span> <span class="n">Adam</span><span class="p">,</span> <span class="n">RMSprop</span>
+<span class="kn">import</span> <span class="nn">matplotlib.pyplot</span> <span class="k">as</span> <span class="nn">plt</span>
+<span class="kn">from</span> <span class="nn">TreasureMaze</span> <span class="kn">import</span> <span class="n">TreasureMaze</span>
+<span class="kn">from</span> <span class="nn">GameExperience</span> <span class="kn">import</span> <span class="n">GameExperience</span>
+<span class="o">%</span><span class="k">matplotlib</span> inline
+</pre></div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell">
+<div class="jp-Cell-inputWrapper">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
+</div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput">
+<h2> Maze Object Generation</h2>
+<div class="alert alert-block alert-info" style="color:black;">
+<b>NOTE:</b>  The following code block contains an 8x8 matrix that will be used as a maze object:
+</div>
+</div>
+</div>
+</div>
+</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs">
+<div class="jp-Cell-inputWrapper">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea">
+<div class="jp-InputPrompt jp-InputArea-prompt">In&#160;[3]:</div>
+<div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor">
+<div class="cm-editor cm-s-jupyter">
+<div class="highlight hl-ipython3"><pre><span></span><span class="n">maze</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span>
+    <span class="p">[</span> <span class="mf">1.</span><span class="p">,</span>  <span class="mf">0.</span><span class="p">,</span>  <span class="mf">1.</span><span class="p">,</span>  <span class="mf">1.</span><span class="p">,</span>  <span class="mf">1.</span><span class="p">,</span>  <span class="mf">1.</span><span class="p">,</span>  <span class="mf">1.</span><span class="p">,</span>  <span class="mf">1.</span><span class="p">],</span>
+    <span class="p">[</span> <span class="mf">1.</span><span class="p">,</span>  <span class="mf">0.</span><span class="p">,</span>  <span class="mf">1.</span><span class="p">,</span>  <span class="mf">1.</span><span class="p">,</span>  <span class="mf">1.</span><span class="p">,</span>  <span class="mf">0.</span><span class="p">,</span>  <span class="mf">1.</span><span class="p">,</span>  <span class="mf">1.</span><span class="p">],</span>
+    <span class="p">[</span> <span class="mf">1.</span><span class="p">,</span>  <span class="mf">1.</span><span class="p">,</span>  <span class="mf">1.</span><span class="p">,</span>  <span class="mf">1.</span><span class="p">,</span>  <span class="mf">0.</span><span class="p">,</span>  <span class="mf">1.</span><span class="p">,</span>  <span class="mf">0.</span><span class="p">,</span>  <span class="mf">1.</span><span class="p">],</span>
+    <span class="p">[</span> <span class="mf">1.</span><span class="p">,</span>  <span class="mf">1.</span><span class="p">,</span>  <span class="mf">1.</span><span class="p">,</span>  <span class="mf">0.</span><span class="p">,</span>  <span class="mf">1.</span><span class="p">,</span>  <span class="mf">1.</span><span class="p">,</span>  <span class="mf">1.</span><span class="p">,</span>  <span class="mf">1.</span><span class="p">],</span>
+    <span class="p">[</span> <span class="mf">1.</span><span class="p">,</span>  <span class="mf">1.</span><span class="p">,</span>  <span class="mf">0.</span><span class="p">,</span>  <span class="mf">1.</span><span class="p">,</span>  <span class="mf">1.</span><span class="p">,</span>  <span class="mf">1.</span><span class="p">,</span>  <span class="mf">1.</span><span class="p">,</span>  <span class="mf">1.</span><span class="p">],</span>
+    <span class="p">[</span> <span class="mf">1.</span><span class="p">,</span>  <span class="mf">1.</span><span class="p">,</span>  <span class="mf">1.</span><span class="p">,</span>  <span class="mf">0.</span><span class="p">,</span>  <span class="mf">1.</span><span class="p">,</span>  <span class="mf">0.</span><span class="p">,</span>  <span class="mf">0.</span><span class="p">,</span>  <span class="mf">0.</span><span class="p">],</span>
+    <span class="p">[</span> <span class="mf">1.</span><span class="p">,</span>  <span class="mf">1.</span><span class="p">,</span>  <span class="mf">1.</span><span class="p">,</span>  <span class="mf">0.</span><span class="p">,</span>  <span class="mf">1.</span><span class="p">,</span>  <span class="mf">1.</span><span class="p">,</span>  <span class="mf">1.</span><span class="p">,</span>  <span class="mf">1.</span><span class="p">],</span>
+    <span class="p">[</span> <span class="mf">1.</span><span class="p">,</span>  <span class="mf">1.</span><span class="p">,</span>  <span class="mf">1.</span><span class="p">,</span>  <span class="mf">1.</span><span class="p">,</span>  <span class="mf">0.</span><span class="p">,</span>  <span class="mf">1.</span><span class="p">,</span>  <span class="mf">1.</span><span class="p">,</span>  <span class="mf">1.</span><span class="p">]</span>
+<span class="p">])</span>
+</pre></div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell">
+<div class="jp-Cell-inputWrapper">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
+</div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput">
+<h2>Helper Functions and Global Variables</h2>
+<div class="alert alert-block alert-info" style="color:black;">
+This <b>show()</b> helper function allows a visual representation of the maze object:
+</div>
+</div>
+</div>
+</div>
+</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs">
+<div class="jp-Cell-inputWrapper">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea">
+<div class="jp-InputPrompt jp-InputArea-prompt">In&#160;[4]:</div>
+<div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor">
+<div class="cm-editor cm-s-jupyter">
+<div class="highlight hl-ipython3"><pre><span></span><span class="k">def</span> <span class="nf">show</span><span class="p">(</span><span class="n">qmaze</span><span class="p">):</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">grid</span><span class="p">(</span><span class="s1">&#39;on&#39;</span><span class="p">)</span>
+    <span class="n">nrows</span><span class="p">,</span> <span class="n">ncols</span> <span class="o">=</span> <span class="n">qmaze</span><span class="o">.</span><span class="n">maze</span><span class="o">.</span><span class="n">shape</span>
+    <span class="n">ax</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">gca</span><span class="p">()</span>
+    <span class="n">ax</span><span class="o">.</span><span class="n">set_xticks</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="mf">0.5</span><span class="p">,</span> <span class="n">nrows</span><span class="p">,</span> <span class="mi">1</span><span class="p">))</span>
+    <span class="n">ax</span><span class="o">.</span><span class="n">set_yticks</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="mf">0.5</span><span class="p">,</span> <span class="n">ncols</span><span class="p">,</span> <span class="mi">1</span><span class="p">))</span>
+    <span class="n">ax</span><span class="o">.</span><span class="n">set_xticklabels</span><span class="p">([])</span>
+    <span class="n">ax</span><span class="o">.</span><span class="n">set_yticklabels</span><span class="p">([])</span>
+    <span class="n">canvas</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">copy</span><span class="p">(</span><span class="n">qmaze</span><span class="o">.</span><span class="n">maze</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">row</span><span class="p">,</span><span class="n">col</span> <span class="ow">in</span> <span class="n">qmaze</span><span class="o">.</span><span class="n">visited</span><span class="p">:</span>
+        <span class="n">canvas</span><span class="p">[</span><span class="n">row</span><span class="p">,</span><span class="n">col</span><span class="p">]</span> <span class="o">=</span> <span class="mf">0.6</span>
+    <span class="n">pirate_row</span><span class="p">,</span> <span class="n">pirate_col</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">qmaze</span><span class="o">.</span><span class="n">state</span>
+    <span class="n">canvas</span><span class="p">[</span><span class="n">pirate_row</span><span class="p">,</span> <span class="n">pirate_col</span><span class="p">]</span> <span class="o">=</span> <span class="mf">0.3</span>   <span class="c1"># pirate cell</span>
+    <span class="n">canvas</span><span class="p">[</span><span class="n">nrows</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="n">ncols</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="mf">0.9</span> <span class="c1"># treasure cell</span>
+    <span class="n">img</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">imshow</span><span class="p">(</span><span class="n">canvas</span><span class="p">,</span> <span class="n">interpolation</span><span class="o">=</span><span class="s1">&#39;none&#39;</span><span class="p">,</span> <span class="n">cmap</span><span class="o">=</span><span class="s1">&#39;gray&#39;</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">img</span>
+</pre></div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell">
+<div class="jp-Cell-inputWrapper">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
+</div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput">
+<p>The <b>pirate agent</b> can move in four directions: left, right, up, and down.</p>
+<div class="alert alert-block alert-warning" style="color:black;">
+<b>Note:</b> While the agent primarily learns by experience through exploitation, often, the agent can choose to explore the environment to find previously undiscovered paths. This is called &quot;exploration&quot; and is defined by epsilon. This value is the <b>EXPLORATION</b> values from the Cartpole assignment. The hyperparameters are provided here and used in the <b>qtrain()</b> method. 
+You are encouraged to try various values for the exploration factor and see how the algorithm performs.
+</div>
+</div>
+</div>
+</div>
+</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs">
+<div class="jp-Cell-inputWrapper">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea">
+<div class="jp-InputPrompt jp-InputArea-prompt">In&#160;[5]:</div>
+<div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor">
+<div class="cm-editor cm-s-jupyter">
+<div class="highlight hl-ipython3"><pre><span></span><span class="n">LEFT</span> <span class="o">=</span> <span class="mi">0</span>
+<span class="n">UP</span> <span class="o">=</span> <span class="mi">1</span>
+<span class="n">RIGHT</span> <span class="o">=</span> <span class="mi">2</span>
+<span class="n">DOWN</span> <span class="o">=</span> <span class="mi">3</span>
+
+
+<span class="c1"># Exploration factor</span>
+<span class="n">epsilon</span> <span class="o">=</span> <span class="mf">1.0</span>
+<span class="n">epsilon_min</span> <span class="o">=</span> <span class="mf">0.01</span>
+<span class="n">epsilon_decay</span> <span class="o">=</span> <span class="mf">0.50</span>
+<span class="n">patience</span> <span class="o">=</span> <span class="mi">10</span>
+
+<span class="c1"># Actions dictionary</span>
+<span class="n">actions_dict</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="n">LEFT</span><span class="p">:</span> <span class="s1">&#39;left&#39;</span><span class="p">,</span>
+    <span class="n">UP</span><span class="p">:</span> <span class="s1">&#39;up&#39;</span><span class="p">,</span>
+    <span class="n">RIGHT</span><span class="p">:</span> <span class="s1">&#39;right&#39;</span><span class="p">,</span>
+    <span class="n">DOWN</span><span class="p">:</span> <span class="s1">&#39;down&#39;</span><span class="p">,</span>
+<span class="p">}</span>
+
+<span class="n">num_actions</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">actions_dict</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell">
+<div class="jp-Cell-inputWrapper">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
+</div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput">
+<p>The sample code block and output below show creating a maze object and performing one action (DOWN), which returns the reward. The resulting updated environment is visualized.</p>
+</div>
+</div>
+</div>
+</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell">
+<div class="jp-Cell-inputWrapper">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea">
+<div class="jp-InputPrompt jp-InputArea-prompt">In&#160;[6]:</div>
+<div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor">
+<div class="cm-editor cm-s-jupyter">
+<div class="highlight hl-ipython3"><pre><span></span><span class="n">qmaze</span> <span class="o">=</span> <span class="n">TreasureMaze</span><span class="p">(</span><span class="n">maze</span><span class="p">)</span>
+<span class="n">canvas</span><span class="p">,</span> <span class="n">reward</span><span class="p">,</span> <span class="n">game_over</span> <span class="o">=</span> <span class="n">qmaze</span><span class="o">.</span><span class="n">act</span><span class="p">(</span><span class="n">DOWN</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;reward=&quot;</span><span class="p">,</span> <span class="n">reward</span><span class="p">)</span>
+<span class="n">show</span><span class="p">(</span><span class="n">qmaze</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+</div>
+<div class="jp-Cell-outputWrapper">
+<div class="jp-Collapser jp-OutputCollapser jp-Cell-outputCollapser">
+</div>
+<div class="jp-OutputArea jp-Cell-outputArea">
+<div class="jp-OutputArea-child">
+<div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
+<div class="jp-RenderedText jp-OutputArea-output">
+<pre>reward= -0.04
+</pre>
+</div>
+</div>
+<div class="jp-OutputArea-child jp-OutputArea-executeResult">
+<div class="jp-OutputPrompt jp-OutputArea-prompt">Out[6]:</div>
+<div class="jp-RenderedText jp-OutputArea-output jp-OutputArea-executeResult">
+<pre>&lt;matplotlib.image.AxesImage at 0x7390adcfb310&gt;</pre>
+</div>
+</div>
+<div class="jp-OutputArea-child">
+<div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
+<div class="jp-RenderedImage jp-OutputArea-output">
+<img alt="No description has been provided for this image" src="javascript://"/>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell">
+<div class="jp-Cell-inputWrapper">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
+</div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput">
+<div class="alert alert-block alert-warning" style="color:black;">
+<b>NOTE:</b> This <b>play_game()</b> function simulates a full game based on the provided trained model. The other parameters include the TreasureMaze object, the starting position of the pirate and max amount of steps to make sure the code does not get stuck in a loop.
+</div>
+</div>
+</div>
+</div>
+</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs">
+<div class="jp-Cell-inputWrapper">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea">
+<div class="jp-InputPrompt jp-InputArea-prompt">In&#160;[7]:</div>
+<div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor">
+<div class="cm-editor cm-s-jupyter">
+<div class="highlight hl-ipython3"><pre><span></span><span class="k">def</span> <span class="nf">play_game</span><span class="p">(</span><span class="n">model</span><span class="p">,</span> <span class="n">qmaze</span><span class="p">,</span> <span class="n">pirate_cell</span><span class="p">,</span> <span class="n">max_steps</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="n">qmaze</span><span class="o">.</span><span class="n">reset</span><span class="p">(</span><span class="n">pirate_cell</span><span class="p">)</span>
+    <span class="n">envstate</span> <span class="o">=</span> <span class="n">qmaze</span><span class="o">.</span><span class="n">observe</span><span class="p">()</span>
+    <span class="n">steps</span> <span class="o">=</span> <span class="mi">0</span>
+    <span class="k">if</span> <span class="n">max_steps</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="n">max_steps</span> <span class="o">=</span> <span class="n">qmaze</span><span class="o">.</span><span class="n">maze</span><span class="o">.</span><span class="n">size</span> <span class="o">*</span> <span class="mi">4</span>  <span class="c1"># safety cutoff</span>
+
+    <span class="k">while</span> <span class="n">steps</span> <span class="o">&lt;</span> <span class="n">max_steps</span><span class="p">:</span>
+        <span class="n">state</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">envstate</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">float32</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">state</span><span class="o">.</span><span class="n">ndim</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="n">state</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">expand_dims</span><span class="p">(</span><span class="n">state</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+
+        <span class="n">q_values</span> <span class="o">=</span> <span class="n">model</span><span class="p">(</span><span class="n">state</span><span class="p">,</span> <span class="n">training</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span><span class="o">.</span><span class="n">numpy</span><span class="p">()</span>
+        <span class="n">action</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">argmax</span><span class="p">(</span><span class="n">q_values</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+
+        <span class="n">envstate</span><span class="p">,</span> <span class="n">reward</span><span class="p">,</span> <span class="n">game_status</span> <span class="o">=</span> <span class="n">qmaze</span><span class="o">.</span><span class="n">act</span><span class="p">(</span><span class="n">action</span><span class="p">)</span>
+        <span class="n">steps</span> <span class="o">+=</span> <span class="mi">1</span>
+
+        <span class="k">if</span> <span class="n">game_status</span> <span class="o">==</span> <span class="s1">&#39;win&#39;</span><span class="p">:</span>
+            <span class="k">return</span> <span class="kc">True</span>
+        <span class="k">elif</span> <span class="n">game_status</span> <span class="o">==</span> <span class="s1">&#39;lose&#39;</span><span class="p">:</span>
+            <span class="k">return</span> <span class="kc">False</span>
+
+    <span class="k">return</span> <span class="kc">False</span>  <span class="c1"># timed out with no result</span>
+</pre></div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell">
+<div class="jp-Cell-inputWrapper">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
+</div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput">
+<div class="alert alert-block alert-warning" style="color:black;">
+<b>Note: </b>
+    This <b>completion_check()</b> function helps you to determine whether the pirate can win any game at all. If your maze is not well designed, the pirate may not win any game at all. In this case, your training would not yield any result. The provided maze in this notebook ensures that there is a path to win and you can run this method to check.
+</div>
+</div>
+</div>
+</div>
+</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs">
+<div class="jp-Cell-inputWrapper">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea">
+<div class="jp-InputPrompt jp-InputArea-prompt">In&#160;[8]:</div>
+<div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor">
+<div class="cm-editor cm-s-jupyter">
+<div class="highlight hl-ipython3"><pre><span></span><span class="k">def</span> <span class="nf">completion_check</span><span class="p">(</span><span class="n">model</span><span class="p">,</span> <span class="n">maze_or_qmaze</span><span class="p">,</span> <span class="n">max_steps</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="c1"># Accept either raw numpy maze or TreasureMaze instance</span>
+    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">maze_or_qmaze</span><span class="p">,</span> <span class="n">TreasureMaze</span><span class="p">):</span>
+        <span class="n">qmaze</span> <span class="o">=</span> <span class="n">maze_or_qmaze</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="n">qmaze</span> <span class="o">=</span> <span class="n">TreasureMaze</span><span class="p">(</span><span class="n">maze_or_qmaze</span><span class="p">)</span>
+
+    <span class="k">for</span> <span class="n">cell</span> <span class="ow">in</span> <span class="n">qmaze</span><span class="o">.</span><span class="n">free_cells</span><span class="p">:</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">qmaze</span><span class="o">.</span><span class="n">valid_actions</span><span class="p">(</span><span class="n">cell</span><span class="p">):</span>
+            <span class="k">continue</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">play_game</span><span class="p">(</span><span class="n">model</span><span class="p">,</span> <span class="n">qmaze</span><span class="p">,</span> <span class="n">cell</span><span class="p">,</span> <span class="n">max_steps</span><span class="o">=</span><span class="n">max_steps</span><span class="p">):</span>
+            <span class="k">return</span> <span class="kc">False</span>
+    <span class="k">return</span> <span class="kc">True</span>
+</pre></div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell">
+<div class="jp-Cell-inputWrapper">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
+</div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput">
+<div class="alert alert-block alert-warning" style="color:black;">
+<b>Note: </b>
+The <b>build_model()</b> function in the block below will build the neural network model. Review the code and note the number of layers, as well as the activation, optimizer, and loss functions that are used to train the model.
+</div>
+</div>
+</div>
+</div>
+</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs">
+<div class="jp-Cell-inputWrapper">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea">
+<div class="jp-InputPrompt jp-InputArea-prompt">In&#160;[9]:</div>
+<div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor">
+<div class="cm-editor cm-s-jupyter">
+<div class="highlight hl-ipython3"><pre><span></span><span class="k">def</span> <span class="nf">build_model</span><span class="p">(</span><span class="n">maze</span><span class="p">):</span>
+    <span class="n">model</span> <span class="o">=</span> <span class="n">Sequential</span><span class="p">()</span>
+    <span class="n">model</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">Dense</span><span class="p">(</span><span class="n">maze</span><span class="o">.</span><span class="n">size</span><span class="p">,</span> <span class="n">input_shape</span><span class="o">=</span><span class="p">(</span><span class="n">maze</span><span class="o">.</span><span class="n">size</span><span class="p">,)))</span>
+    <span class="n">model</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">PReLU</span><span class="p">())</span>
+    <span class="n">model</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">Dense</span><span class="p">(</span><span class="n">maze</span><span class="o">.</span><span class="n">size</span><span class="p">))</span>
+    <span class="n">model</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">PReLU</span><span class="p">())</span>
+    <span class="n">model</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">Dense</span><span class="p">(</span><span class="n">num_actions</span><span class="p">))</span>
+    <span class="n">model</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span><span class="n">optimizer</span><span class="o">=</span><span class="s1">&#39;adam&#39;</span><span class="p">,</span> <span class="n">loss</span><span class="o">=</span><span class="s1">&#39;mse&#39;</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">model</span>
+</pre></div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell">
+<div class="jp-Cell-inputWrapper">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
+</div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput">
+<div class="alert alert-block alert-warning" style="color:black;">
+<b>Note:</b>
+    This <b>train_step()</b> helper function in the block below is used to help predict Q-values (quality values) in the current modelto see how good each action is in a given state and improve the Q-network by reducing the gap between what is predicted and what should have been predicted. 
+</div>
+<br/>
+<div class="alert alert-block alert-info" style="color:black;">
+If you&#39;re interested in reading up on the <i>@tf.function</i>, which is a decorator for Tensorflow to run this code into a TensorFlow computation graph, please refer to this link: <a rel="noopener" href="https://www.tensorflow.org/guide/intro_to_graphs">https://www.tensorflow.org/guide/intro_to_graphs</a>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell">
+<div class="jp-Cell-inputWrapper">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
+</div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput">
+<h2>Tensorflow GPU Warning</h2>
+<div class="alert alert-block alert-danger" style="color: #333333;">
+    You will see a <b>warning in red</b> &quot;INTERNAL: CUDA Runtime error: Failed call to cudaGetRuntimeVersion: Error loading CUDA libraries. GPU will not be used.&quot;. This is simply coming from <b>Tensorflow skipping using GPU for this assignment.</b>
+</div>
+</div>
+</div>
+</div>
+</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell">
+<div class="jp-Cell-inputWrapper">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea">
+<div class="jp-InputPrompt jp-InputArea-prompt">In&#160;[10]:</div>
+<div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor">
+<div class="cm-editor cm-s-jupyter">
+<div class="highlight hl-ipython3"><pre><span></span><span class="n">loss_fn</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">keras</span><span class="o">.</span><span class="n">losses</span><span class="o">.</span><span class="n">MeanSquaredError</span><span class="p">()</span>
+<span class="n">optimizer</span> <span class="o">=</span> <span class="n">tf</span><span class="o">.</span><span class="n">keras</span><span class="o">.</span><span class="n">optimizers</span><span class="o">.</span><span class="n">Adam</span><span class="p">()</span>
+
+<span class="nd">@tf</span><span class="o">.</span><span class="n">function</span>
+<span class="k">def</span> <span class="nf">train_step</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">):</span>
+    <span class="k">with</span> <span class="n">tf</span><span class="o">.</span><span class="n">GradientTape</span><span class="p">()</span> <span class="k">as</span> <span class="n">tape</span><span class="p">:</span>
+        <span class="n">q_values</span> <span class="o">=</span> <span class="n">model</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">training</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="n">loss</span> <span class="o">=</span> <span class="n">loss_fn</span><span class="p">(</span><span class="n">y</span><span class="p">,</span> <span class="n">q_values</span><span class="p">)</span>
+    <span class="n">grads</span> <span class="o">=</span> <span class="n">tape</span><span class="o">.</span><span class="n">gradient</span><span class="p">(</span><span class="n">loss</span><span class="p">,</span> <span class="n">model</span><span class="o">.</span><span class="n">trainable_variables</span><span class="p">)</span>
+    <span class="n">optimizer</span><span class="o">.</span><span class="n">apply_gradients</span><span class="p">(</span><span class="nb">zip</span><span class="p">(</span><span class="n">grads</span><span class="p">,</span> <span class="n">model</span><span class="o">.</span><span class="n">trainable_variables</span><span class="p">))</span>
+    <span class="k">return</span> <span class="n">loss</span>
+</pre></div>
+</div>
+</div>
+</div>
+</div>
+<div class="jp-Cell-outputWrapper">
+<div class="jp-Collapser jp-OutputCollapser jp-Cell-outputCollapser">
+</div>
+<div class="jp-OutputArea jp-Cell-outputArea">
+<div class="jp-OutputArea-child">
+<div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
+<div class="jp-RenderedText jp-OutputArea-output">
+<pre>WARNING: All log messages before absl::InitializeLog() is called are written to STDERR
+I0000 00:00:1791140242.698750     373 cuda_executor.cc:1015] successful NUMA node read from SysFS had negative value (-1), but there must be at least one NUMA node, so returning NUMA node zero. See more at https://github.com/torvalds/linux/blob/v6.0/Documentation/ABI/testing/sysfs-bus-pci#L344-L355
+I0000 00:00:1791140242.747579     373 cuda_executor.cc:1015] successful NUMA node read from SysFS had negative value (-1), but there must be at least one NUMA node, so returning NUMA node zero. See more at https://github.com/torvalds/linux/blob/v6.0/Documentation/ABI/testing/sysfs-bus-pci#L344-L355
+I0000 00:00:1791140242.749242     373 cuda_executor.cc:1015] successful NUMA node read from SysFS had negative value (-1), but there must be at least one NUMA node, so returning NUMA node zero. See more at https://github.com/torvalds/linux/blob/v6.0/Documentation/ABI/testing/sysfs-bus-pci#L344-L355
+I0000 00:00:1791140242.751944     373 cuda_executor.cc:1015] successful NUMA node read from SysFS had negative value (-1), but there must be at least one NUMA node, so returning NUMA node zero. See more at https://github.com/torvalds/linux/blob/v6.0/Documentation/ABI/testing/sysfs-bus-pci#L344-L355
+I0000 00:00:1791140242.753525     373 cuda_executor.cc:1015] successful NUMA node read from SysFS had negative value (-1), but there must be at least one NUMA node, so returning NUMA node zero. See more at https://github.com/torvalds/linux/blob/v6.0/Documentation/ABI/testing/sysfs-bus-pci#L344-L355
+I0000 00:00:1791140242.755057     373 cuda_executor.cc:1015] successful NUMA node read from SysFS had negative value (-1), but there must be at least one NUMA node, so returning NUMA node zero. See more at https://github.com/torvalds/linux/blob/v6.0/Documentation/ABI/testing/sysfs-bus-pci#L344-L355
+I0000 00:00:1791140242.946131     373 cuda_executor.cc:1015] successful NUMA node read from SysFS had negative value (-1), but there must be at least one NUMA node, so returning NUMA node zero. See more at https://github.com/torvalds/linux/blob/v6.0/Documentation/ABI/testing/sysfs-bus-pci#L344-L355
+I0000 00:00:1791140242.947826     373 cuda_executor.cc:1015] successful NUMA node read from SysFS had negative value (-1), but there must be at least one NUMA node, so returning NUMA node zero. See more at https://github.com/torvalds/linux/blob/v6.0/Documentation/ABI/testing/sysfs-bus-pci#L344-L355
+I0000 00:00:1791140242.949397     373 cuda_executor.cc:1015] successful NUMA node read from SysFS had negative value (-1), but there must be at least one NUMA node, so returning NUMA node zero. See more at https://github.com/torvalds/linux/blob/v6.0/Documentation/ABI/testing/sysfs-bus-pci#L344-L355
+</pre>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell">
+<div class="jp-Cell-inputWrapper">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
+</div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput">
+<h1>#TODO: Complete the Q-Training Algorithm Code Block<a rel="noopener" class="anchor-link" href="#%23TODO:-Complete-the-Q-Training-Algorithm-Code-Block">&#182;</a></h1><div class="alert alert-block alert-info" style="color:black;">
+    This is your deep Q-learning implementation. The goal of your deep Q-learning implementation is to find the best possible navigation sequence that results in reaching the treasure cell while maximizing the reward. In your implementation, you need to determine the optimal number of epochs to achieve a 100% win rate.
+</div>
+<b>Pseudocode:</b>
+<br/>
+    For each epoch:
+        Reset the environment at a random starting cell
+        agent_cell = randomly select a free cell
+        <br/>
+<b>Hint:</b> Review the reset method in the TreasureMaze.py class.
+
+<pre><code>    Set the initial environment state
+    env_state should reference the environment&#39;s current state
+    Hint: Review the observe method in the TreasureMaze.py class.
+
+    While game status is not game over:
+       previous_envstate = env_state
+        Decide on an action:
+            - If possible, take a random valid exploration action and 
+              randomly choose action (left, right, up, down)
+              and assign it to an action variable
+            - Else, pick the best exploitation action from the model and assign it to an action variable
+              Hint: Review the predict method in the GameExperience.py class.
+
+       Retrieve the values below from the act() method.
+       env_state, reward, game_status = qmaze.act(action)
+       Hint: Review the act method in the TreasureMaze.py class.
+
+        Track the wins and losses from the game_status using win_history 
+     
+       Store the episode below in the Experience replay object
+       episode = [previous_envstate, action, reward, envstate, game_status]
+       Hint: Review the remember method in the GameExperience.py class.
+    
+       Train neural network model and evaluate loss
+       Hint: Call GameExperience.get_data to retrieve training data (input and target) 
+       and pass to the train_step method and assign it to batch_loss and append to the loss variable
+    
+  If the win rate is above the threshold and your model passes the completion check, that would be your epoch.</code></pre>
+<p>Note: A 100% win rate <b>DOES NOT EXPLICITLY MEAN</b> that you have solved the maze. It simply indicates that during the last evaluation, the pirate <i>happened</i> to get to the treasure. Be sure to utilise the <b>completion_check()</b> function to validate your pirate found the treasure at every starting point and consistently!</p>
+<p><b> You will need to complete the section starting with #START_HERE. Please use the pseudocode above as guidance. </b></p>
+</div>
+</div>
+</div>
+</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs">
+<div class="jp-Cell-inputWrapper">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea">
+<div class="jp-InputPrompt jp-InputArea-prompt">In&#160;[11]:</div>
+<div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor">
+<div class="cm-editor cm-s-jupyter">
+<div class="highlight hl-ipython3"><pre><span></span><span class="k">def</span> <span class="nf">qtrain</span><span class="p">(</span><span class="n">model</span><span class="p">,</span> <span class="n">maze</span><span class="p">,</span> <span class="o">**</span><span class="n">opt</span><span class="p">):</span>
+    <span class="k">global</span> <span class="n">epsilon</span>
+
+    <span class="c1"># Number of epochs</span>
+    <span class="n">n_epoch</span> <span class="o">=</span> <span class="n">opt</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;n_epoch&#39;</span><span class="p">,</span> <span class="mi">15000</span><span class="p">)</span>
+
+    <span class="c1"># Maximum number of experiences stored in memory</span>
+    <span class="n">max_memory</span> <span class="o">=</span> <span class="n">opt</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;max_memory&#39;</span><span class="p">,</span> <span class="mi">1000</span><span class="p">)</span>
+
+    <span class="c1"># Number of experiences used for training</span>
+    <span class="n">data_size</span> <span class="o">=</span> <span class="n">opt</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;data_size&#39;</span><span class="p">,</span> <span class="mi">50</span><span class="p">)</span>
+
+    <span class="c1"># Frequency for updating the target network</span>
+    <span class="n">target_update_freq</span> <span class="o">=</span> <span class="n">opt</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">&#39;target_update_freq&#39;</span><span class="p">,</span> <span class="mi">50</span><span class="p">)</span>
+
+    <span class="c1"># Record training start time</span>
+    <span class="n">start_time</span> <span class="o">=</span> <span class="n">datetime</span><span class="o">.</span><span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">()</span>
+
+    <span class="c1"># Create the maze environment</span>
+    <span class="n">qmaze</span> <span class="o">=</span> <span class="n">TreasureMaze</span><span class="p">(</span><span class="n">maze</span><span class="p">)</span>
+
+    <span class="c1"># Create the target model</span>
+    <span class="n">target_model</span> <span class="o">=</span> <span class="n">clone_model</span><span class="p">(</span><span class="n">model</span><span class="p">)</span>
+    <span class="n">target_model</span><span class="o">.</span><span class="n">set_weights</span><span class="p">(</span><span class="n">model</span><span class="o">.</span><span class="n">get_weights</span><span class="p">())</span>
+
+    <span class="c1"># Create the experience replay object</span>
+    <span class="n">experience</span> <span class="o">=</span> <span class="n">GameExperience</span><span class="p">(</span>
+        <span class="n">model</span><span class="p">,</span>
+        <span class="n">target_model</span><span class="p">,</span>
+        <span class="n">max_memory</span><span class="o">=</span><span class="n">max_memory</span>
+    <span class="p">)</span>
+
+    <span class="c1"># Store wins and losses</span>
+    <span class="n">win_history</span> <span class="o">=</span> <span class="p">[]</span>
+
+    <span class="c1"># Size of the recent win-history window</span>
+    <span class="n">hsize</span> <span class="o">=</span> <span class="n">qmaze</span><span class="o">.</span><span class="n">maze</span><span class="o">.</span><span class="n">size</span> <span class="o">//</span> <span class="mi">2</span>
+
+    <span class="c1"># Initial win rate</span>
+    <span class="n">win_rate</span> <span class="o">=</span> <span class="mf">0.0</span>
+
+    <span class="c1"># =============START_HERE================</span>
+
+    <span class="k">for</span> <span class="n">epoch</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">n_epoch</span><span class="p">):</span>
+
+        <span class="c1"># Reset loss and episode counter</span>
+        <span class="n">loss</span> <span class="o">=</span> <span class="mf">0.0</span>
+        <span class="n">n_episodes</span> <span class="o">=</span> <span class="mi">0</span>
+
+        <span class="c1"># Select a random starting location</span>
+        <span class="n">pirate_cell</span> <span class="o">=</span> <span class="n">random</span><span class="o">.</span><span class="n">choice</span><span class="p">(</span><span class="n">qmaze</span><span class="o">.</span><span class="n">free_cells</span><span class="p">)</span>
+
+        <span class="c1"># Reset the maze to the starting location</span>
+        <span class="n">qmaze</span><span class="o">.</span><span class="n">reset</span><span class="p">(</span><span class="n">pirate_cell</span><span class="p">)</span>
+
+        <span class="c1"># Observe the initial environment state</span>
+        <span class="n">env_state</span> <span class="o">=</span> <span class="n">qmaze</span><span class="o">.</span><span class="n">observe</span><span class="p">()</span>
+
+        <span class="c1"># Continue until the pirate wins or loses</span>
+        <span class="k">while</span> <span class="kc">True</span><span class="p">:</span>
+
+            <span class="c1"># Save the current environment state</span>
+            <span class="n">previous_envstate</span> <span class="o">=</span> <span class="n">env_state</span>
+
+            <span class="c1"># Decide whether to explore or exploit</span>
+            <span class="k">if</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">rand</span><span class="p">()</span> <span class="o">&lt;</span> <span class="n">epsilon</span><span class="p">:</span>
+
+                <span class="c1"># Exploration:</span>
+                <span class="c1"># randomly choose one of the valid actions</span>
+                <span class="n">action</span> <span class="o">=</span> <span class="n">random</span><span class="o">.</span><span class="n">choice</span><span class="p">(</span>
+                    <span class="n">qmaze</span><span class="o">.</span><span class="n">valid_actions</span><span class="p">()</span>
+                <span class="p">)</span>
+
+            <span class="k">else</span><span class="p">:</span>
+
+                <span class="c1"># Exploitation:</span>
+                <span class="c1"># predict Q-values using the model</span>
+                <span class="n">q_values</span> <span class="o">=</span> <span class="n">experience</span><span class="o">.</span><span class="n">predict</span><span class="p">(</span>
+                    <span class="n">previous_envstate</span>
+                <span class="p">)</span>
+
+                <span class="c1"># Choose the action with the highest Q-value</span>
+                <span class="n">action</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">argmax</span><span class="p">(</span><span class="n">q_values</span><span class="p">)</span>
+
+            <span class="c1"># Perform the action</span>
+            <span class="n">env_state</span><span class="p">,</span> <span class="n">reward</span><span class="p">,</span> <span class="n">game_status</span> <span class="o">=</span> <span class="n">qmaze</span><span class="o">.</span><span class="n">act</span><span class="p">(</span>
+                <span class="n">action</span>
+            <span class="p">)</span>
+
+            <span class="c1"># Record wins and losses</span>
+            <span class="k">if</span> <span class="n">game_status</span> <span class="o">==</span> <span class="s1">&#39;win&#39;</span><span class="p">:</span>
+                <span class="n">win_history</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+
+            <span class="k">elif</span> <span class="n">game_status</span> <span class="o">==</span> <span class="s1">&#39;lose&#39;</span><span class="p">:</span>
+                <span class="n">win_history</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+
+            <span class="c1"># Create the experience</span>
+            <span class="n">episode</span> <span class="o">=</span> <span class="p">[</span>
+                <span class="n">previous_envstate</span><span class="p">,</span>
+                <span class="n">action</span><span class="p">,</span>
+                <span class="n">reward</span><span class="p">,</span>
+                <span class="n">env_state</span><span class="p">,</span>
+                <span class="n">game_status</span>
+            <span class="p">]</span>
+
+            <span class="c1"># Store the experience</span>
+            <span class="n">experience</span><span class="o">.</span><span class="n">remember</span><span class="p">(</span><span class="n">episode</span><span class="p">)</span>
+
+            <span class="c1"># Retrieve training data</span>
+            <span class="n">inputs</span><span class="p">,</span> <span class="n">targets</span> <span class="o">=</span> <span class="n">experience</span><span class="o">.</span><span class="n">get_data</span><span class="p">(</span>
+                <span class="n">data_size</span>
+            <span class="p">)</span>
+
+            <span class="c1"># Train the neural network</span>
+            <span class="n">batch_loss</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">train_on_batch</span><span class="p">(</span>
+                <span class="n">inputs</span><span class="p">,</span>
+                <span class="n">targets</span>
+            <span class="p">)</span>
+
+            <span class="c1"># Add batch loss to total loss</span>
+            <span class="n">loss</span> <span class="o">+=</span> <span class="n">batch_loss</span>
+
+            <span class="c1"># Count the action</span>
+            <span class="n">n_episodes</span> <span class="o">+=</span> <span class="mi">1</span>
+
+            <span class="c1"># End the current game if pirate won or lost</span>
+            <span class="k">if</span> <span class="n">game_status</span> <span class="o">!=</span> <span class="s1">&#39;not_over&#39;</span><span class="p">:</span>
+                <span class="k">break</span>
+
+        <span class="c1"># Calculate recent win rate</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">win_history</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">:</span>
+
+            <span class="n">recent_history</span> <span class="o">=</span> <span class="n">win_history</span><span class="p">[</span><span class="o">-</span><span class="n">hsize</span><span class="p">:]</span>
+
+            <span class="n">win_rate</span> <span class="o">=</span> <span class="p">(</span>
+                <span class="nb">sum</span><span class="p">(</span><span class="n">recent_history</span><span class="p">)</span>
+                <span class="o">/</span> <span class="nb">len</span><span class="p">(</span><span class="n">recent_history</span><span class="p">)</span>
+            <span class="p">)</span>
+
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">win_rate</span> <span class="o">=</span> <span class="mf">0.0</span>
+
+        <span class="c1"># Calculate elapsed time</span>
+        <span class="n">dt</span> <span class="o">=</span> <span class="n">datetime</span><span class="o">.</span><span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">()</span> <span class="o">-</span> <span class="n">start_time</span>
+        <span class="n">t</span> <span class="o">=</span> <span class="n">format_time</span><span class="p">(</span><span class="n">dt</span><span class="o">.</span><span class="n">total_seconds</span><span class="p">())</span>
+
+        <span class="c1"># Print training information</span>
+        <span class="nb">print</span><span class="p">(</span>
+            <span class="s2">&quot;Epoch: </span><span class="si">{:03d}</span><span class="s2">/</span><span class="si">{:d}</span><span class="s2"> | &quot;</span>
+            <span class="s2">&quot;Loss: </span><span class="si">{:.4f}</span><span class="s2"> | &quot;</span>
+            <span class="s2">&quot;Episodes: </span><span class="si">{:d}</span><span class="s2"> | &quot;</span>
+            <span class="s2">&quot;Win count: </span><span class="si">{:d}</span><span class="s2"> | &quot;</span>
+            <span class="s2">&quot;Win rate: </span><span class="si">{:.3f}</span><span class="s2"> | &quot;</span>
+            <span class="s2">&quot;time: </span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+                <span class="n">epoch</span><span class="p">,</span>
+                <span class="n">n_epoch</span> <span class="o">-</span> <span class="mi">1</span><span class="p">,</span>
+                <span class="n">loss</span><span class="p">,</span>
+                <span class="n">n_episodes</span><span class="p">,</span>
+                <span class="nb">sum</span><span class="p">(</span><span class="n">win_history</span><span class="p">),</span>
+                <span class="n">win_rate</span><span class="p">,</span>
+                <span class="n">t</span>
+            <span class="p">)</span>
+        <span class="p">)</span>
+
+        <span class="c1"># Adjust exploration rate</span>
+        <span class="k">if</span> <span class="n">win_rate</span> <span class="o">&gt;</span> <span class="mf">0.9</span><span class="p">:</span>
+            <span class="n">epsilon</span> <span class="o">=</span> <span class="mf">0.05</span>
+
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">epsilon</span> <span class="o">=</span> <span class="nb">max</span><span class="p">(</span>
+                <span class="n">epsilon</span> <span class="o">*</span> <span class="n">epsilon_decay</span><span class="p">,</span>
+                <span class="n">epsilon_min</span>
+            <span class="p">)</span>
+
+        <span class="c1"># Update target network</span>
+        <span class="k">if</span> <span class="n">epoch</span> <span class="o">%</span> <span class="n">target_update_freq</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+            <span class="n">target_model</span><span class="o">.</span><span class="n">set_weights</span><span class="p">(</span>
+                <span class="n">model</span><span class="o">.</span><span class="n">get_weights</span><span class="p">()</span>
+            <span class="p">)</span>
+
+        <span class="c1"># Check whether the model consistently</span>
+        <span class="c1"># solves the maze</span>
+        <span class="k">if</span> <span class="p">(</span>
+            <span class="n">win_rate</span> <span class="o">&gt;=</span> <span class="mf">0.999</span>
+            <span class="ow">and</span> <span class="n">completion_check</span><span class="p">(</span><span class="n">model</span><span class="p">,</span> <span class="n">maze</span><span class="p">)</span>
+        <span class="p">):</span>
+
+            <span class="nb">print</span><span class="p">(</span>
+                <span class="s2">&quot;Reached 100% win rate at epoch </span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+                    <span class="n">epoch</span>
+                <span class="p">)</span>
+            <span class="p">)</span>
+
+            <span class="k">break</span>
+
+    <span class="c1"># Calculate total training time</span>
+    <span class="n">total_time</span> <span class="o">=</span> <span class="n">format_time</span><span class="p">(</span>
+        <span class="p">(</span>
+            <span class="n">datetime</span><span class="o">.</span><span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">()</span>
+            <span class="o">-</span> <span class="n">start_time</span>
+        <span class="p">)</span><span class="o">.</span><span class="n">total_seconds</span><span class="p">()</span>
+    <span class="p">)</span>
+
+    <span class="nb">print</span><span class="p">(</span>
+        <span class="s2">&quot;Training complete in:&quot;</span><span class="p">,</span>
+        <span class="n">total_time</span>
+    <span class="p">)</span>
+
+
+<span class="c1"># Utility function for displaying elapsed time</span>
+<span class="k">def</span> <span class="nf">format_time</span><span class="p">(</span><span class="n">seconds</span><span class="p">):</span>
+
+    <span class="k">if</span> <span class="n">seconds</span> <span class="o">&lt;</span> <span class="mi">400</span><span class="p">:</span>
+        <span class="k">return</span> <span class="s2">&quot;</span><span class="si">%.1f</span><span class="s2"> seconds&quot;</span> <span class="o">%</span> <span class="nb">float</span><span class="p">(</span><span class="n">seconds</span><span class="p">)</span>
+
+    <span class="k">elif</span> <span class="n">seconds</span> <span class="o">&lt;</span> <span class="mi">4000</span><span class="p">:</span>
+        <span class="k">return</span> <span class="s2">&quot;</span><span class="si">%.2f</span><span class="s2"> minutes&quot;</span> <span class="o">%</span> <span class="p">(</span>
+            <span class="n">seconds</span> <span class="o">/</span> <span class="mf">60.0</span>
+        <span class="p">)</span>
+
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">return</span> <span class="s2">&quot;</span><span class="si">%.2f</span><span class="s2"> hours&quot;</span> <span class="o">%</span> <span class="p">(</span>
+            <span class="n">seconds</span> <span class="o">/</span> <span class="mf">3600.0</span>
+        <span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell">
+<div class="jp-Cell-inputWrapper">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
+</div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput">
+<h2>Test Your Model<a rel="noopener" class="anchor-link" href="#Test-Your-Model">&#182;</a></h2><p>Now we will start testing the deep Q-learning implementation. To begin, select <strong>Cell</strong>, then <strong>Run All</strong> from the menu bar. This will run your notebook. As it runs, you should see output begin to appear beneath the next few cells. The code below creates an <b>instance</b> of TreasureMaze. This does not show your actual training done.</p>
+</div>
+</div>
+</div>
+</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell">
+<div class="jp-Cell-inputWrapper">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea">
+<div class="jp-InputPrompt jp-InputArea-prompt">In&#160;[12]:</div>
+<div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor">
+<div class="cm-editor cm-s-jupyter">
+<div class="highlight hl-ipython3"><pre><span></span><span class="n">qmaze</span> <span class="o">=</span> <span class="n">TreasureMaze</span><span class="p">(</span><span class="n">maze</span><span class="p">)</span>
+<span class="n">show</span><span class="p">(</span><span class="n">qmaze</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+</div>
+<div class="jp-Cell-outputWrapper">
+<div class="jp-Collapser jp-OutputCollapser jp-Cell-outputCollapser">
+</div>
+<div class="jp-OutputArea jp-Cell-outputArea">
+<div class="jp-OutputArea-child jp-OutputArea-executeResult">
+<div class="jp-OutputPrompt jp-OutputArea-prompt">Out[12]:</div>
+<div class="jp-RenderedText jp-OutputArea-output jp-OutputArea-executeResult">
+<pre>&lt;matplotlib.image.AxesImage at 0x7390adcfcb50&gt;</pre>
+</div>
+</div>
+<div class="jp-OutputArea-child">
+<div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
+<div class="jp-RenderedImage jp-OutputArea-output">
+<img alt="No description has been provided for this image" src="javascript://"/>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell">
+<div class="jp-Cell-inputWrapper">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
+</div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput">
+<p>In the next code block, you will build your model using the <b>build_model</b> function and train it using deep Q-learning. Note: This step takes several minutes to fully run.</p>
+</div>
+</div>
+</div>
+</div>
+<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell">
+<div class="jp-Cell-inputWrapper">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
+</div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput">
+<div class="alert alert-block alert-danger" style="color: #333333;">
+<b>WARNING</b>  If you did not attempt the assignment, the code <b>will</b> error out at this section.
+ </div>
+</div>
+</div>
+</div>
+</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell">
+<div class="jp-Cell-inputWrapper">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea">
+<div class="jp-InputPrompt jp-InputArea-prompt">In&#160;[13]:</div>
+<div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor">
+<div class="cm-editor cm-s-jupyter">
+<div class="highlight hl-ipython3"><pre><span></span><span class="n">model</span> <span class="o">=</span> <span class="n">build_modelmodel</span> <span class="o">=</span> <span class="n">build_model</span><span class="p">(</span><span class="n">maze</span><span class="p">)</span>
+<span class="n">qtrain</span><span class="p">(</span><span class="n">model</span><span class="p">,</span> <span class="n">maze</span><span class="p">,</span> <span class="n">n_epoch</span><span class="o">=</span><span class="mi">50</span><span class="p">,</span> <span class="n">max_memory</span><span class="o">=</span><span class="mi">8</span><span class="o">*</span><span class="n">maze</span><span class="o">.</span><span class="n">size</span><span class="p">,</span> <span class="n">data_size</span><span class="o">=</span><span class="mi">32</span><span class="p">,</span> <span class="n">target_update_freq</span><span class="o">=</span><span class="mi">50</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+</div>
+<div class="jp-Cell-outputWrapper">
+<div class="jp-Collapser jp-OutputCollapser jp-Cell-outputCollapser">
+</div>
+<div class="jp-OutputArea jp-Cell-outputArea">
+<div class="jp-OutputArea-child">
+<div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
+<div class="jp-RenderedText jp-OutputArea-output">
+<pre>/home/codio/.pyenv/versions/3.11.9/lib/python3.11/site-packages/keras/src/layers/core/dense.py:87: UserWarning: Do not pass an `input_shape`/`input_dim` argument to a layer. When using Sequential models, prefer using an `Input(shape)` object as the first layer in the model instead.
+  super().__init__(activity_regularizer=activity_regularizer, **kwargs)
+WARNING: All log messages before absl::InitializeLog() is called are written to STDERR
+I0000 00:00:1791140244.422232     429 service.cc:146] XLA service 0x738fec003aa0 initialized for platform CUDA (this does not guarantee that XLA will be used). Devices:
+I0000 00:00:1791140244.422266     429 service.cc:154]   StreamExecutor device (0): Tesla T4, Compute Capability 7.5
+I0000 00:00:1791140245.390043     429 device_compiler.h:188] Compiled cluster using XLA!  This line is logged at most once for the lifetime of the process.
+</pre>
+</div>
+</div>
+<div class="jp-OutputArea-child">
+<div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
+<div class="jp-RenderedText jp-OutputArea-output">
+<pre>WARNING:tensorflow:5 out of the last 5 calls to &lt;function TensorFlowTrainer.make_train_function.&lt;locals&gt;.one_step_on_iterator at 0x7390ab906200&gt; triggered tf.function retracing. Tracing is expensive and the excessive number of tracings could be due to (1) creating @tf.function repeatedly in a loop, (2) passing tensors with different shapes, (3) passing Python objects instead of tensors. For (1), please define your @tf.function outside of the loop. For (2), @tf.function has reduce_retracing=True option that can avoid unnecessary retracing. For (3), please refer to https://www.tensorflow.org/guide/function#controlling_retracing and https://www.tensorflow.org/api_docs/python/tf/function for  more details.
+WARNING:tensorflow:6 out of the last 6 calls to &lt;function TensorFlowTrainer.make_train_function.&lt;locals&gt;.one_step_on_iterator at 0x7390ab906200&gt; triggered tf.function retracing. Tracing is expensive and the excessive number of tracings could be due to (1) creating @tf.function repeatedly in a loop, (2) passing tensors with different shapes, (3) passing Python objects instead of tensors. For (1), please define your @tf.function outside of the loop. For (2), @tf.function has reduce_retracing=True option that can avoid unnecessary retracing. For (3), please refer to https://www.tensorflow.org/guide/function#controlling_retracing and https://www.tensorflow.org/api_docs/python/tf/function for  more details.
+Epoch: 000/49 | Loss: 0.7225 | Episodes: 145 | Win count: 0 | Win rate: 0.000 | time: 20.9 seconds
+Epoch: 001/49 | Loss: 0.3507 | Episodes: 140 | Win count: 0 | Win rate: 0.000 | time: 46.5 seconds
+Epoch: 002/49 | Loss: 0.1125 | Episodes: 51 | Win count: 1 | Win rate: 0.333 | time: 58.6 seconds
+Epoch: 003/49 | Loss: 0.3337 | Episodes: 151 | Win count: 1 | Win rate: 0.250 | time: 99.7 seconds
+Epoch: 004/49 | Loss: 0.3032 | Episodes: 136 | Win count: 1 | Win rate: 0.200 | time: 148.0 seconds
+Epoch: 005/49 | Loss: 0.3194 | Episodes: 146 | Win count: 2 | Win rate: 0.333 | time: 210.8 seconds
+Epoch: 006/49 | Loss: 0.0613 | Episodes: 28 | Win count: 3 | Win rate: 0.429 | time: 224.2 seconds
+Epoch: 007/49 | Loss: 0.3149 | Episodes: 138 | Win count: 3 | Win rate: 0.375 | time: 294.8 seconds
+Epoch: 008/49 | Loss: 0.0024 | Episodes: 1 | Win count: 4 | Win rate: 0.444 | time: 295.4 seconds
+Epoch: 009/49 | Loss: 0.3356 | Episodes: 138 | Win count: 4 | Win rate: 0.400 | time: 376.4 seconds
+Epoch: 010/49 | Loss: 0.3793 | Episodes: 153 | Win count: 4 | Win rate: 0.364 | time: 7.95 minutes
+Epoch: 011/49 | Loss: 0.1202 | Episodes: 48 | Win count: 5 | Win rate: 0.417 | time: 8.53 minutes
+Epoch: 012/49 | Loss: 0.3415 | Episodes: 135 | Win count: 5 | Win rate: 0.385 | time: 10.23 minutes
+Epoch: 013/49 | Loss: 0.0703 | Episodes: 28 | Win count: 6 | Win rate: 0.429 | time: 10.60 minutes
+Epoch: 014/49 | Loss: 0.3498 | Episodes: 141 | Win count: 7 | Win rate: 0.467 | time: 12.55 minutes
+Epoch: 015/49 | Loss: 0.3266 | Episodes: 134 | Win count: 7 | Win rate: 0.438 | time: 14.57 minutes
+Epoch: 016/49 | Loss: 0.1291 | Episodes: 54 | Win count: 8 | Win rate: 0.471 | time: 15.42 minutes
+Epoch: 017/49 | Loss: 0.1603 | Episodes: 68 | Win count: 9 | Win rate: 0.500 | time: 16.51 minutes
+Epoch: 018/49 | Loss: 0.1925 | Episodes: 83 | Win count: 10 | Win rate: 0.526 | time: 17.88 minutes
+Epoch: 019/49 | Loss: 0.0437 | Episodes: 19 | Win count: 11 | Win rate: 0.550 | time: 18.20 minutes
+Epoch: 020/49 | Loss: 0.2032 | Episodes: 89 | Win count: 12 | Win rate: 0.571 | time: 19.73 minutes
+Epoch: 021/49 | Loss: 0.0701 | Episodes: 31 | Win count: 13 | Win rate: 0.591 | time: 20.27 minutes
+Epoch: 022/49 | Loss: 0.1012 | Episodes: 45 | Win count: 14 | Win rate: 0.609 | time: 21.06 minutes
+Epoch: 023/49 | Loss: 0.1005 | Episodes: 45 | Win count: 15 | Win rate: 0.625 | time: 21.85 minutes
+Epoch: 024/49 | Loss: 0.0378 | Episodes: 17 | Win count: 16 | Win rate: 0.640 | time: 22.16 minutes
+Epoch: 025/49 | Loss: 0.1528 | Episodes: 69 | Win count: 17 | Win rate: 0.654 | time: 23.40 minutes
+Epoch: 026/49 | Loss: 0.0440 | Episodes: 20 | Win count: 18 | Win rate: 0.667 | time: 23.76 minutes
+Epoch: 027/49 | Loss: 0.1009 | Episodes: 46 | Win count: 19 | Win rate: 0.679 | time: 24.60 minutes
+Epoch: 028/49 | Loss: 0.0437 | Episodes: 20 | Win count: 20 | Win rate: 0.690 | time: 24.97 minutes
+Epoch: 029/49 | Loss: 0.0653 | Episodes: 30 | Win count: 21 | Win rate: 0.700 | time: 25.53 minutes
+Epoch: 030/49 | Loss: 0.0586 | Episodes: 27 | Win count: 22 | Win rate: 0.710 | time: 26.03 minutes
+Epoch: 031/49 | Loss: 0.0627 | Episodes: 29 | Win count: 23 | Win rate: 0.719 | time: 26.57 minutes
+Epoch: 032/49 | Loss: 0.1396 | Episodes: 65 | Win count: 24 | Win rate: 0.750 | time: 27.80 minutes
+Epoch: 033/49 | Loss: 0.0853 | Episodes: 40 | Win count: 25 | Win rate: 0.781 | time: 28.56 minutes
+Epoch: 034/49 | Loss: 0.0128 | Episodes: 6 | Win count: 26 | Win rate: 0.781 | time: 28.68 minutes
+Epoch: 035/49 | Loss: 0.0064 | Episodes: 3 | Win count: 27 | Win rate: 0.812 | time: 28.74 minutes
+Epoch: 036/49 | Loss: 0.0403 | Episodes: 19 | Win count: 28 | Win rate: 0.844 | time: 29.10 minutes
+Epoch: 037/49 | Loss: 0.0064 | Episodes: 3 | Win count: 29 | Win rate: 0.844 | time: 29.16 minutes
+Epoch: 038/49 | Loss: 0.0318 | Episodes: 15 | Win count: 30 | Win rate: 0.844 | time: 29.45 minutes
+Epoch: 039/49 | Loss: 0.0550 | Episodes: 26 | Win count: 31 | Win rate: 0.875 | time: 29.95 minutes
+Epoch: 040/49 | Loss: 0.0380 | Episodes: 18 | Win count: 32 | Win rate: 0.875 | time: 30.30 minutes
+Epoch: 041/49 | Loss: 0.0484 | Episodes: 23 | Win count: 33 | Win rate: 0.906 | time: 30.75 minutes
+Epoch: 042/49 | Loss: 0.0440 | Episodes: 21 | Win count: 34 | Win rate: 0.938 | time: 31.16 minutes
+Epoch: 043/49 | Loss: 0.0251 | Episodes: 12 | Win count: 35 | Win rate: 0.938 | time: 31.40 minutes
+Epoch: 044/49 | Loss: 0.0083 | Episodes: 4 | Win count: 36 | Win rate: 0.969 | time: 31.47 minutes
+Epoch: 045/49 | Loss: 0.0873 | Episodes: 42 | Win count: 37 | Win rate: 0.969 | time: 32.30 minutes
+Epoch: 046/49 | Loss: 0.0248 | Episodes: 12 | Win count: 38 | Win rate: 0.969 | time: 32.54 minutes
+Epoch: 047/49 | Loss: 0.0351 | Episodes: 17 | Win count: 39 | Win rate: 1.000 | time: 32.90 minutes
+Epoch: 048/49 | Loss: 0.0452 | Episodes: 22 | Win count: 40 | Win rate: 1.000 | time: 33.34 minutes
+Epoch: 049/49 | Loss: 0.2054 | Episodes: 101 | Win count: 41 | Win rate: 1.000 | time: 35.40 minutes
+Training complete in: 35.41 minutes
+</pre>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell">
+<div class="jp-Cell-inputWrapper">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
+</div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput">
+<div class="alert alert-block alert-warning" style="color:black;">
+<b>Note: </b> This cell will check to see if the model passes the completion check. Note: This could take several minutes.
+</div>
+</div>
+</div>
+</div>
+</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell">
+<div class="jp-Cell-inputWrapper">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea">
+<div class="jp-InputPrompt jp-InputArea-prompt">In&#160;[14]:</div>
+<div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor">
+<div class="cm-editor cm-s-jupyter">
+<div class="highlight hl-ipython3"><pre><span></span><span class="n">completion_check</span><span class="p">(</span><span class="n">model</span><span class="p">,</span> <span class="n">qmaze</span><span class="p">)</span>
+<span class="n">show</span><span class="p">(</span><span class="n">qmaze</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+</div>
+<div class="jp-Cell-outputWrapper">
+<div class="jp-Collapser jp-OutputCollapser jp-Cell-outputCollapser">
+</div>
+<div class="jp-OutputArea jp-Cell-outputArea">
+<div class="jp-OutputArea-child jp-OutputArea-executeResult">
+<div class="jp-OutputPrompt jp-OutputArea-prompt">Out[14]:</div>
+<div class="jp-RenderedText jp-OutputArea-output jp-OutputArea-executeResult">
+<pre>&lt;matplotlib.image.AxesImage at 0x738f5b8589d0&gt;</pre>
+</div>
+</div>
+<div class="jp-OutputArea-child">
+<div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
+<div class="jp-RenderedImage jp-OutputArea-output">
+<img alt="No description has been provided for this image" src="javascript://"/>
+</div>
+</div>
+</div>
+</div>
+</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs">
+<div class="jp-Cell-inputWrapper">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea">
+<div class="jp-InputPrompt jp-InputArea-prompt">In&#160;[&#160;]:</div>
+<div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor">
+<div class="cm-editor cm-s-jupyter">
+<div class="highlight hl-ipython3"><pre><span></span> 
+</pre></div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell">
+<div class="jp-Cell-inputWrapper">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
+</div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput">
+<p>This cell will test your model for one game. It will start the pirate at the top-left corner and run <b>play_game()</b>. The agent should find a path from the starting position to the target (treasure). The treasure is located in the bottom-right corner.</p>
+</div>
+</div>
+</div>
+</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell">
+<div class="jp-Cell-inputWrapper">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea">
+<div class="jp-InputPrompt jp-InputArea-prompt">In&#160;[15]:</div>
+<div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor">
+<div class="cm-editor cm-s-jupyter">
+<div class="highlight hl-ipython3"><pre><span></span><span class="n">pirate_start</span> <span class="o">=</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+<span class="n">play_game</span><span class="p">(</span><span class="n">model</span><span class="p">,</span> <span class="n">qmaze</span><span class="p">,</span> <span class="n">pirate_start</span><span class="p">)</span>
+<span class="n">show</span><span class="p">(</span><span class="n">qmaze</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+</div>
+<div class="jp-Cell-outputWrapper">
+<div class="jp-Collapser jp-OutputCollapser jp-Cell-outputCollapser">
+</div>
+<div class="jp-OutputArea jp-Cell-outputArea">
+<div class="jp-OutputArea-child jp-OutputArea-executeResult">
+<div class="jp-OutputPrompt jp-OutputArea-prompt">Out[15]:</div>
+<div class="jp-RenderedText jp-OutputArea-output jp-OutputArea-executeResult">
+<pre>&lt;matplotlib.image.AxesImage at 0x738f5b384350&gt;</pre>
+</div>
+</div>
+<div class="jp-OutputArea-child">
+<div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
+<div class="jp-RenderedImage jp-OutputArea-output">
+<img alt="No description has been provided for this image" src="javascript://"/>
+</div>
+</div>
+</div>
+</div>
+</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell">
+<div class="jp-Cell-inputWrapper">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea">
+<div class="jp-InputPrompt jp-InputArea-prompt">In&#160;[16]:</div>
+<div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor">
+<div class="cm-editor cm-s-jupyter">
+<div class="highlight hl-ipython3"><pre><span></span><span class="n">result</span> <span class="o">=</span> <span class="n">completion_check</span><span class="p">(</span><span class="n">model</span><span class="p">,</span> <span class="n">maze</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Completion check:&quot;</span><span class="p">,</span> <span class="n">result</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+</div>
+<div class="jp-Cell-outputWrapper">
+<div class="jp-Collapser jp-OutputCollapser jp-Cell-outputCollapser">
+</div>
+<div class="jp-OutputArea jp-Cell-outputArea">
+<div class="jp-OutputArea-child">
+<div class="jp-OutputPrompt jp-OutputArea-prompt"></div>
+<div class="jp-RenderedText jp-OutputArea-output">
+<pre>Completion check: False
+</pre>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="jp-Cell jp-MarkdownCell jp-Notebook-cell">
+<div class="jp-Cell-inputWrapper">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea"><div class="jp-InputPrompt jp-InputArea-prompt">
+</div><div class="jp-RenderedHTMLCommon jp-RenderedMarkdown jp-MarkdownOutput">
+<h2>Save and Submit Your Work<a rel="noopener" class="anchor-link" href="#Save-and-Submit-Your-Work">&#182;</a></h2><div class="alert alert-block alert-info" style="color:black;">
+<b>Hint:</b> To use the markdown block below, double click in the <b>Type Markdown and LaTeX:  &#120572;2</b> block below, to turn it back to html, Run the cell.
+</div>
+<p>After you have finished creating the code for your notebook, save your work.
+Make sure that your notebook contains your name in the filename (e.g. Doe_Jane_ProjectTwo.html). Download this file as an .html file clicking on <em><strong>file</strong></em> in <em>Jupyter Notebook</em>, navigating down to <em><strong>Download as</strong></em> and clicking on <em><strong>.html</strong></em>.
+Download a copy of your .html file and submit it to Brightspace.</p>
+</div>
+</div>
+</div>
+</div><div class="jp-Cell jp-CodeCell jp-Notebook-cell jp-mod-noOutputs">
+<div class="jp-Cell-inputWrapper">
+<div class="jp-Collapser jp-InputCollapser jp-Cell-inputCollapser">
+</div>
+<div class="jp-InputArea jp-Cell-inputArea">
+<div class="jp-InputPrompt jp-InputArea-prompt">In&#160;[&#160;]:</div>
+<div class="jp-CodeMirrorEditor jp-Editor jp-InputArea-editor">
+<div class="cm-editor cm-s-jupyter">
+<div class="highlight hl-ipython3"><pre><span></span> 
+</pre></div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</main>
+
+
+<script type="module" src="https://s.brightspace.com/lib/bsi/2026.9.217/unbundled/mathjax.js"></script><script type="text/javascript">document.addEventListener('DOMContentLoaded', function() {
+			if (document.querySelector('math, .d2l-element, .d2l-cplus-layout') || /\$\$|\\\(|\\\[|\\begin{|\\ref{|\\eqref{/.test(document.body.innerHTML)) {
+				document.querySelectorAll('mspace[linebreak="newline"]').forEach(elm => {
+					elm.setAttribute('style', 'display: block; height: 0.5rem;');
+				});
+
+				document.querySelectorAll('math mmultiscripts > none').forEach(elm => {
+					const mrow = document.createElementNS('http://www.w3.org/1998/Math/MathML', 'mrow');
+					elm.replaceWith(mrow);
+				});
+
+				window.D2L.MathJax.loadMathJax({"renderLatex":false,"outputScale":1.5,"enableMML3Support":false});
+			}
+		});</script><script type="module" src="https://s.brightspace.com/lib/bsi/2026.9.217/unbundled/prism.js"></script><script type="text/javascript">document.addEventListener('DOMContentLoaded', function() {
+					document.querySelectorAll('.d2l-code').forEach(code => {
+						window.D2L.Prism.formatCodeElement(code);
+					});
+				});</script><script type="module" src="https://s.brightspace.com/lib/bsi/2026.9.217/unbundled/embeds.js"></script><script type="text/javascript">document.addEventListener('DOMContentLoaded', function() {
+					window.D2L.EmbedRenderer.renderEmbeds(document.body);
+				});</script></body></html>
